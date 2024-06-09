@@ -2,6 +2,7 @@ inherit_from:
   - .rubocop/base.yml
   - .rubocop/layout.yml
   - .rubocop/metrics.yml
+  - .rubocop/naming.yml
   - .rubocop/performance.yml
   - .rubocop/rspec.yml
   - .rubocop/style.yml

@@ -22,8 +22,13 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'lib/**/*', 'sig/**/*']
   spec.require_paths = ['lib']
+  # spec.executables = ['ar-metadata']
+  # spec.bindir = 'bin'
 
   # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency 'activerecord', '~> 7.0'
+  spec.add_dependency 'rails', '~> 7.0'
+  spec.add_dependency 'tty-prompt', '~> 0.23.0'
+  spec.add_dependency 'tty-table', '~> 0.12.0'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end

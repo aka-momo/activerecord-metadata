@@ -1,24 +1,91 @@
 # ActiveRecord::Metadata
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/active_record/metadata`. To experiment with that code, run `bin/console` for an interactive prompt.
+⚠️ This project is under development
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+    $ bundle add activerecord-metadata
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+    $ gem install activerecord-metadata
+
+## Configuration
+
+```ruby
+ActiveRecord::Metadata.configure do |config|
+  # Default config.tags = []
+  config.tags = %w[personal_data senstive_data]
+
+  # Default config.models = []
+  config.models = proc {
+    Rails.application.eager_load!
+
+    ApplicationRecord.descendants.reject do |model|
+      model.table_name.blank? || model.superclass != ApplicationRecord
+    end
+  }
+
+  # Default config.tag_default_rules = nil
+  config.tag_default_rules = lambda { |column, tag|
+    string_column = %w[text string jsonb json].include?(column.type.to_s)
+
+    case tag
+    when 'personal_data', 'senstive_data'
+      string_column ? config.tag_undefined_value : false
+    end
+  }
+
+  # Default config.tags_allowed_values = {}
+  config.tags_allowed_values = {
+    'personal_data' => [true, false, 'notsure']
+  }
+
+  # Default config.metadata_file_path_prefix = 'db'
+  # config.metadata_file_path_prefix
+
+  # Default config.metadata_file_name = 'schema_metadata'
+  # config.metadata_file_name
+
+  # Default config.metadata_file_format = 'yaml'
+  # config.metadata_file_format
+
+  # Default config.tag_undefined_value = ":FIXME"
+  # config.tag_undefined_value
+
+  # Default config.default_tag_allowed_values = [true, false]
+  # config.default_tag_allowed_values
+end
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+(Re)generate Schema Metadata
+```
+rake activerecord_metadata:export
+```
+
+Trigger the interactive CI to start updating your metadata
+```
+rake activerecord_metadata:ci
+```
+
+Check the column is tag value
+```ruby
+# User.column_tag_value(column_name, tag_name)
+User.column_tag_value('first_name', 'personal_data')
+# Returns the value of the tag (true, false, etc...)
+```
+
+Check if the column is tagged
+```ruby
+# User.column_tagged?(column_name, tag_name, tag_value)
+User.column_tagged?('first_name', 'personal_data', true)
+# Returns if the value matches true
+```
+
 
 ## Development
 
