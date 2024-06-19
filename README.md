@@ -62,15 +62,18 @@ end
 
 ## Usage
 
-(Re)generate Schema Metadata
+#### (Re)generate Schema Metadata
+The following command fetches the updated database schema to update the annotation file
 ```
 rake activerecord_metadata:export
 ```
 
-Trigger the interactive CI to start updating your metadata
+#### Trigger the interactive CI to start updating your metadata
 ```
 rake activerecord_metadata:ci
 ```
+<img width="1309" alt="image" src="https://github.com/aka-momo/activerecord-metadata/assets/1743388/29b72ffb-df22-4509-8e84-3db72d0055e2">
+
 
 Check the column is tag value
 ```ruby
